@@ -3,26 +3,27 @@
 #include <string>
 
 using TextFunction = std::function<std::string(const std::string&)>;
+using Decorator = std::function<TextFunction(const TextFunction&)>;
 
 std::string PlainText(const std::string& text) {
   return text;
 }
 
-TextFunction AddBrackets(TextFunction text_function) {
-  return [text_function](const std::string& text) {
-    return "[" + text_function(text) + "]";
+TextFunction BracketsDecorator(const TextFunction& component) {
+  return [component](const std::string& text) {
+    return "[" + component(text) + "]";
   };
 }
 
-TextFunction AddStars(TextFunction text_function) {
-  return [text_function](const std::string& text) {
-    return "*" + text_function(text) + "*";
+TextFunction StarsDecorator(const TextFunction& component) {
+  return [component](const std::string& text) {
+    return "*" + component(text) + "*";
   };
 }
 
-TextFunction AddQuotes(TextFunction text_function) {
-  return [text_function](const std::string& text) {
-    return "\"" + text_function(text) + "\"";
+TextFunction QuotesDecorator(const TextFunction& component) {
+  return [component](const std::string& text) {
+    return "\"" + component(text) + "\"";
   };
 }
 
@@ -33,23 +34,27 @@ int main() {
   int count{};
   std::cin >> count;
 
-  TextFunction text_function{PlainText};
+  TextFunction component{PlainText};
 
   for (int i{}; i < count; ++i) {
-    std::string decorator{};
-    std::cin >> decorator;
+    std::string decorator_name{};
+    std::cin >> decorator_name;
 
-    if (decorator == "brackets") {
-      text_function = AddBrackets(text_function);
-    } else if (decorator == "stars") {
-      text_function = AddStars(text_function);
-    } else if (decorator == "quotes") {
-      text_function = AddQuotes(text_function);
+    Decorator decorator;
+
+    if (decorator_name == "brackets") {
+      decorator = BracketsDecorator;
+    } else if (decorator_name == "stars") {
+      decorator = StarsDecorator;
+    } else if (decorator_name == "quotes") {
+      decorator = QuotesDecorator;
     } else {
       std::cout << "error\n";
       return 0;
     }
+
+    component = decorator(component);
   }
 
-  std::cout << text_function(text) << '\n';
+  std::cout << component(text) << '\n';
 }
