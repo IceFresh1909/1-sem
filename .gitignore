@@ -1,0 +1,9 @@
+build/
+*.o
+*.out
+a.out
+strategy
+decorator
+.DS_Store
+.idea/
+.vscode/
