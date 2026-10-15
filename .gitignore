@@ -2,8 +2,8 @@ build/
 *.o
 *.out
 a.out
-strategy
-decorator
+/strategy
+/decorator
 .DS_Store
 .idea/
 .vscode/
